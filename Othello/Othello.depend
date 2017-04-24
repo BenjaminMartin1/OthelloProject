@@ -1,0 +1,93 @@
+# depslib dependency file v1.0
+1492889902 source:g:\othello\main.cpp
+	<iostream>
+	<cstdlib>
+	<windows.h>
+	<map>
+	<vector>
+	"Game.h"
+	"Board.h"
+	"constants.h"
+
+1492888687 source:g:\othello\src\board.cpp
+	<iostream>
+	<stdlib.h>
+	<map>
+	<vector>
+	"Board.h"
+
+1492880513 g:\othello\include\board.h
+	<map>
+	<vector>
+	"constants.h"
+
+1492881331 g:\othello\include\constants.h
+
+1492890055 g:\othello\include\game.h
+	"Board.h"
+	"IA.h"
+
+1492889818 source:g:\othello\src\game.cpp
+	<iostream>
+	<stdlib.h>
+	"Board.h"
+	"Game.h"
+
+1492889799 source:g:\othello\src\ia.cpp
+	<iostream>
+	<stdlib.h>
+	"constants.h"
+	"IA.h"
+	"Board.h"
+
+1492890230 g:\othello\include\ia.h
+	"Board.h"
+
+1492892158 source:c:\users\ben\desktop\othello\main.cpp
+	<iostream>
+	<cstdlib>
+	<windows.h>
+	<map>
+	<vector>
+	"Game.h"
+	"Board.h"
+	"constants.h"
+
+1492890056 c:\users\ben\desktop\othello\include\game.h
+	"Board.h"
+	"IA.h"
+
+1492984231 c:\users\ben\desktop\othello\include\board.h
+	<map>
+	<vector>
+	"constants.h"
+
+1492890292 c:\users\ben\desktop\othello\include\constants.h
+
+1492984885 c:\users\ben\desktop\othello\include\ia.h
+	<unordered_map>
+	"Board.h"
+
+1492972002 source:c:\users\ben\desktop\othello\src\board.cpp
+	<iostream>
+	<stdlib.h>
+	<map>
+	<vector>
+	"Board.h"
+
+1492984325 source:c:\users\ben\desktop\othello\src\game.cpp
+	<iostream>
+	<stdlib.h>
+	"Board.h"
+	"Game.h"
+	<windows.h>
+	<conio.h>
+
+1492984878 source:c:\users\ben\desktop\othello\src\ia.cpp
+	<iostream>
+	<stdlib.h>
+	"constants.h"
+	"IA.h"
+	"Board.h"
+	<algorithm>
+

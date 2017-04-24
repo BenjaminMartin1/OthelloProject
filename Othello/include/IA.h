@@ -18,7 +18,7 @@ class IA
 		virtual ~IA();
 
 		// Exécute la bonne IA selon le level
-		void run();
+		void run(int player);
 
 	private:
 		// Pointeur vers l'instance du plateau de jeu. Permet de le manipuler
@@ -30,10 +30,10 @@ class IA
 		int level;
 
 		// Intelligence artificielle n°1, en privé et appellé par run()
-		void lvl_1();
+		void lvl_1(int player);
 
 		// Intelligence artificielle n°2, en privé et appellé par run()
-		void lvl_2();
+		void lvl_2(int player);
 
 		// Algorithme permettant de calculer le coup le plus efficace pour l'IA n°2
 		void minmax( multimap <int, Board>& _boardStates);

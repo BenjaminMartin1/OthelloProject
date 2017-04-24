@@ -104,6 +104,30 @@ bool Board::move(int x, int y, int player)
 }
 
 
+/*
+	Retourne le nombre de pions d'un joueur
+*/
+int Board::countPawns(int player)
+{
+	int nb = 0;
+
+	// On défini de quel type sont les cases amies
+	int friend_cell	 = (player == PLAYER_WHITE) ? CELL_WHITE : CELL_BLACK;
+
+	// On localise tous les pions du joueur
+	for (int i=0 ; i<8 ; i++)
+	{
+		for (int j=0 ; j<8 ; j++)
+		{
+			if (cells[i][j] == friend_cell)
+			{
+				nb++;
+			}
+		}
+	}
+
+	return nb;
+}
 
 /*
 	Retourne la liste des cellules où le joueur indiqué peut se déplacer.

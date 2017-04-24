@@ -28,15 +28,15 @@ IA::~IA()
 /*
 	Déclenche la bonne IA
 */
-void IA::run()
+void IA::run(int player)
 {
 	if (level == IA_LVL_1)
 	{
-		lvl_1();
+		lvl_1(player);
 	}
 	else if (level == IA_LVL_2)
 	{
-		lvl_2();
+		lvl_2(player);
 	}
 }
 
@@ -46,13 +46,13 @@ void IA::run()
 	Intelligence artificielle level 1
 	Utilise la classe Board pour placer un pion
 */
-void IA::lvl_1()
+void IA::lvl_1(int player)
 {
 	vector< map<char,int> > cells_accessibles;
 	int random, x, y;
 
 	// On récupère toutes les cellules où peut aller l'IA
-	cells_accessibles = board->accessibles(PLAYER_BLACK);
+	cells_accessibles = board->accessibles(player);
 
 	// On choisit une cellule au hasard
 	random = rand() % (int)(cells_accessibles.size());
@@ -60,7 +60,7 @@ void IA::lvl_1()
 	y = cells_accessibles[random]['y'];
 
 	// Et on y va !
-	board->move(x, y, PLAYER_BLACK);
+	board->move(x, y, player);
 }
 
 
@@ -68,7 +68,7 @@ void IA::lvl_1()
 	Intelligence artificielle level 2
 	Utilise la classe Board pour placer un pion
 */
-void IA::lvl_2()
+void IA::lvl_2(int player)
 {
 	//Détermine le joueur actuellement en train de jouer l'état du plateau pour l'algorithme
 	int currentPlayer = 0;

@@ -1,9 +1,10 @@
 #include <iostream>
 #include <stdlib.h>
-#include "Board.h"
-#include "Game.h"
 #include <windows.h>
 #include <conio.h>
+#include <string>
+#include "Board.h"
+#include "Game.h"
 
 using namespace std;
 
@@ -24,95 +25,149 @@ Game::~Game()
 void Game::reset()
 {
 	board	= Board();
-	ia		= IA(&board, IA_LVL_2);
+	ia		= IA(&board, IA_LVL_1);
 	winner	= 0;
+	message	= "";
 }
 
 
 /*
 	Fait jouer un tour de jeu à l'humain
 */
-void Game::playHumain()
+void Game::playHumain(int player)
 {
-    int x, y, x_cursor, y_cursor;
-    bool press_enter = false;
+	int x, y, x_cursor, y_cursor;
+	bool press_enter = false;
 
-    COORD pos;
-    CONSOLE_SCREEN_BUFFER_INFO infos;
+	COORD pos;
+	CONSOLE_SCREEN_BUFFER_INFO infos;
 
-    // On répète la saisie tant qu'un pion n'a pas été ajouté
-    do
-    {
-        // Au début du tour, on place le curseur dans la première case
-        x_cursor = 2;
-        y_cursor = 1;
+	// Au début du tour, on place le curseur dans la première case
+	x_cursor = 2;
+	y_cursor = 1;
 
-        pos = {x_cursor,y_cursor};
-        SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
-
-        // Tant que la touche entré n'a pas été pressée
-        do
-        {
-
-            switch(getch())
-            {
-                // Récupération de la position du curseur
-                GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE),&infos);
-                x_cursor = infos.dwCursorPosition.X;
-                y_cursor = infos.dwCursorPosition.Y;
-
-                case 'z':
-                    if ((y_cursor-2)>=1)
-                        y_cursor-=2;
-                    break;
-
-                case 'd':
-                    if ((x_cursor+4)<=30)
-                        x_cursor+=4;
-                    break;
-
-                case 's':
-                    if ((y_cursor+2)<=16)
-                        y_cursor+=2;
-                    break;
-
-                case 'q':
-                    if ((x_cursor-4)>=2)
-                        x_cursor-=4;
-                    break;
-
-                case 13:
-                    press_enter = true;
-                    break;
-            }
-
-            pos = {x_cursor, y_cursor};
-            SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
-
-        }
-        while(!press_enter);
+	pos = {x_cursor,y_cursor};
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
 
 
-        // Traduction de (x,y) terrain en (x,y) tableau
-        x = (y_cursor/2);
-        y = (x_cursor/4);
+	// On quitte la fonction si on se rend compte que le joueur n'a pas de cases dispo
+	if (board.accessibles(player).size() == 0)
+	{
+		winner = (player == PLAYER_WHITE) ? PLAYER_BLACK : PLAYER_WHITE;
+		return;
+	}
 
-        press_enter = false;
-    }
-    while (!board.move(x,y,PLAYER_WHITE));
+
+	// On répète la saisie tant qu'un pion n'a pas été ajouté
+	do
+	{
+
+		// Tant que la touche entré n'a pas été pressée
+		do
+		{
+
+			if (player == PLAYER_WHITE)
+				displayMessage("C'est au joueur blanc de jouer");
+			else if (player == PLAYER_BLACK)
+				displayMessage("C'est au joueur noir de jouer");
+
+
+			switch(getch())
+			{
+				// Récupération de la position du curseur
+				GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE),&infos);
+				x_cursor = infos.dwCursorPosition.X;
+				y_cursor = infos.dwCursorPosition.Y;
+
+				case 'z':
+					if ((y_cursor-2)>=1)
+						y_cursor-=2;
+					break;
+
+				case 'd':
+					if ((x_cursor+4)<=30)
+						x_cursor+=4;
+					break;
+
+				case 's':
+					if ((y_cursor+2)<=16)
+						y_cursor+=2;
+					break;
+
+				case 'q':
+					if ((x_cursor-4)>=2)
+						x_cursor-=4;
+					break;
+
+				// Abandon
+				case 'l':
+					winner = (player == PLAYER_WHITE) ? PLAYER_BLACK : PLAYER_WHITE;
+					return;
+					break;
+
+
+
+				case 13:
+					press_enter = true;
+					break;
+
+				default:
+					displayMessage("Pour se deplacer c'est Z, D, S et Q");
+			}
+
+			pos = {x_cursor, y_cursor};
+			SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
+
+		}
+		while(!press_enter);
+
+
+		// Traduction de (x,y) terrain en (x,y) tableau
+		x = (y_cursor/2);
+		y = (x_cursor/4);
+
+		press_enter = false;
+
+		 // Message effacé si passe le move
+		displayMessage("Deplacement impossible");
+	}
+	while (!board.move(x, y, player));
+
+	// On afface le "deplacement impossible"
+	displayMessage("                           ");
 }
+
 
 /*
 	Fait un tour de jeu à l'IA
 */
-void Game::playIA()
+void Game::playIA(int player)
 {
-	ia.run();
+	// On quitte la fonction si on se rend compte que le joueur n'a pas de cases dispo
+	if (board.accessibles(player).size() == 0)
+	{
+		winner = (player == PLAYER_WHITE) ? PLAYER_BLACK : PLAYER_WHITE;
+		return;
+	}
+
+	ia.run(player);
 }
 
 
 /*
-	Returne true si la partie est terminée, false sinon
+	Retourne le score d'un joueur
+*/
+int Game::getScore(int player)
+{
+	if (player != PLAYER_WHITE && player != PLAYER_BLACK)
+		return 99;
+	else
+		return board.countPawns(player);
+}
+
+
+/*
+	Retourne true si la partie est terminée, false sinon
 */
 bool Game::isOver()
 {
@@ -120,8 +175,24 @@ bool Game::isOver()
 }
 
 
+
+/*
+	Retourne le gagnant
+*/
+int Game::getWinner()
+{
+	return winner;
+}
+
+
+
+/*
+	Affiche le terrain de jeu
+*/
 void Game::display()
 {
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),BLUE_GREY*16 + YELLOW);
+
 	// Nettoyage de la console
 	system("cls");
 
@@ -158,11 +229,20 @@ void Game::display()
 		{
 			cout << char(179);
 
+
 			if (board.getCell(i, j) == CELL_WHITE)
-				cout << " W ";
+			{
+				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),BLUE_GREY*16 + WHITE);
+				cout << " " << char(2) << " ";
+				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),BLUE_GREY*16 + YELLOW);
+			}
 
 			else if (board.getCell(i, j) == CELL_BLACK)
-				cout << " B ";
+			{
+				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),BLUE_GREY*16 + BLACK);
+				cout << " " << char(2) << " ";
+				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),BLUE_GREY*16 + YELLOW);
+			}
 
 			else
 				cout << "   ";
@@ -177,5 +257,32 @@ void Game::display()
 	cout << char(196) << char(196) << char(196) << char(196) << char(196) << char(196) << char(196) << char(196);
 	cout << char(196) << char(196) << char(196) << char(196) << char(196) << char(196) << char(196) << char(196);
 	cout << char(217) << endl;
+
+	displayMessage(message);
+}
+
+void Game::displayMessage(string msg)
+{
+
+	message = msg;
+
+	COORD pos;
+	CONSOLE_SCREEN_BUFFER_INFO infos;
+
+	// On sauvegrade la position du curseur
+	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE),&infos);
+
+	// On efface un eventuel message déjà présent
+	pos = {40, 5};
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
+	cout << "                                      ";
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
+
+	// On écrit le message
+	cout << message;
+
+	// On remet le curseur là où il était
+	pos = {infos.dwCursorPosition.X, infos.dwCursorPosition.Y};
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
 
 }

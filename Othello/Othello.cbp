@@ -37,11 +37,13 @@
 		<Unit filename="include/Board.h" />
 		<Unit filename="include/Game.h" />
 		<Unit filename="include/IA.h" />
+		<Unit filename="include/UserInterface.h" />
 		<Unit filename="include/constants.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/Board.cpp" />
 		<Unit filename="src/Game.cpp" />
 		<Unit filename="src/IA.cpp" />
+		<Unit filename="src/UserInterface.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

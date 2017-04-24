@@ -45,6 +45,9 @@ class Board
 		// Retourne le contenu d'une cellule
 		int getCell(int x, int y);
 
+		// Compte les pions d'un joueur
+		int countPawns(int player);
+
 		// Setter pour le score associé
 		void setAssociatedScore(int _associatedScore);
 

@@ -27,14 +27,13 @@ class Game
 		void playHumain(int player);
 
 		// Fais jouer l'IA
-		void playIA(int player);
+		void playIA(int level, int player);
 
 		// Retourne le score d'un joueur
 		int getScore(int player);
 
 		// Retourne le gagnant
 		int getWinner();
-
 
 
 	private:

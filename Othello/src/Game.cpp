@@ -1,4 +1,5 @@
 #include <iostream>
+#include <map>
 #include <stdlib.h>
 #include <windows.h>
 #include <conio.h>
@@ -25,7 +26,7 @@ Game::~Game()
 void Game::reset()
 {
 	board	= Board();
-	ia		= IA(&board, IA_LVL_1);
+	ia		= IA(&board);
 	winner	= 0;
 	message	= "";
 }
@@ -141,7 +142,7 @@ void Game::playHumain(int player)
 /*
 	Fait un tour de jeu à l'IA
 */
-void Game::playIA(int player)
+void Game::playIA(int level, int player)
 {
 	// On quitte la fonction si on se rend compte que le joueur n'a pas de cases dispo
 	if (board.accessibles(player).size() == 0)
@@ -150,7 +151,7 @@ void Game::playIA(int player)
 		return;
 	}
 
-	ia.run(player);
+	ia.run(level, player);
 }
 
 
@@ -258,8 +259,42 @@ void Game::display()
 	cout << char(196) << char(196) << char(196) << char(196) << char(196) << char(196) << char(196) << char(196);
 	cout << char(217) << endl;
 
+
+	cout << endl << endl << endl;
+
+
+	// Affichage de l'arbre
+	vector<map<char,int>> tree;
+	std::map<char,int>::iterator it;
+	tree = ia.getTree();
+
+	if (tree.size() > 0)
+	{
+
+		cout << "Arbre de l'intelligence artificielle au dernier tour : " << endl << endl;
+
+		for (int i=0 ; i<tree.size() ; i++)
+		{
+			cout << "[" << i << "]" << endl;
+			cout << " |- Case : (" << tree[i]['x'] << ", " << tree[i]['y'] << ")" << endl;
+
+			it = tree[i].find('s');
+			if (it != tree[i].end())
+				cout << " |- Score : " << tree[i]['s'] << endl;
+
+			cout << endl;
+		}
+	}
+
+	COORD pos = {0, 0};
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
+
+
+
 	displayMessage(message);
 }
+
+
 
 void Game::displayMessage(string msg)
 {
@@ -286,3 +321,4 @@ void Game::displayMessage(string msg)
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
 
 }
+

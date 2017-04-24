@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1492995318 source:g:\othello\main.cpp
+1493001793 source:g:\othello\main.cpp
 	<iostream>
 	<cstdlib>
 	<windows.h>
@@ -22,15 +22,16 @@
 	<vector>
 	"constants.h"
 
-1492992095 g:\othello\include\constants.h
+1493000821 g:\othello\include\constants.h
 
-1492994931 g:\othello\include\game.h
+1493000666 g:\othello\include\game.h
 	<string>
 	"Board.h"
 	"IA.h"
 
-1492995075 source:g:\othello\src\game.cpp
+1493000531 source:g:\othello\src\game.cpp
 	<iostream>
+	<map>
 	<stdlib.h>
 	<windows.h>
 	<conio.h>
@@ -38,7 +39,7 @@
 	"Board.h"
 	"Game.h"
 
-1492990845 source:g:\othello\src\ia.cpp
+1493000501 source:g:\othello\src\ia.cpp
 	<iostream>
 	<stdlib.h>
 	"constants.h"
@@ -46,20 +47,21 @@
 	"Board.h"
 	<algorithm>
 
-1492990810 g:\othello\include\ia.h
+1493000545 g:\othello\include\ia.h
 	<unordered_map>
 	"Board.h"
 
-1492995090 g:\othello\include\userinterface.h
+1493001450 g:\othello\include\userinterface.h
 	<iostream>
 
-1492995129 source:g:\othello\src\userinterface.cpp
+1493001984 source:g:\othello\src\userinterface.cpp
 	<windows.h>
 	<conio.h>
+	<string>
 	"constants.h"
 	"UserInterface.h"
 
-1492995318 source:c:\users\ben\desktop\othello\main.cpp
+1493002042 source:c:\users\ben\desktop\othello\main.cpp
 	<iostream>
 	<cstdlib>
 	<windows.h>
@@ -70,10 +72,10 @@
 	"Board.h"
 	"constants.h"
 
-1492995090 c:\users\ben\desktop\othello\include\userinterface.h
+1493001450 c:\users\ben\desktop\othello\include\userinterface.h
 	<iostream>
 
-1492994932 c:\users\ben\desktop\othello\include\game.h
+1493000666 c:\users\ben\desktop\othello\include\game.h
 	<string>
 	"Board.h"
 	"IA.h"
@@ -83,9 +85,9 @@
 	<vector>
 	"constants.h"
 
-1492992096 c:\users\ben\desktop\othello\include\constants.h
+1493000822 c:\users\ben\desktop\othello\include\constants.h
 
-1492990810 c:\users\ben\desktop\othello\include\ia.h
+1493000546 c:\users\ben\desktop\othello\include\ia.h
 	<unordered_map>
 	"Board.h"
 
@@ -96,8 +98,9 @@
 	<vector>
 	"Board.h"
 
-1492995516 source:c:\users\ben\desktop\othello\src\game.cpp
+1493000532 source:c:\users\ben\desktop\othello\src\game.cpp
 	<iostream>
+	<map>
 	<stdlib.h>
 	<windows.h>
 	<conio.h>
@@ -105,17 +108,11 @@
 	"Board.h"
 	"Game.h"
 
-1492990846 source:c:\users\ben\desktop\othello\src\ia.cpp
+1493000502 source:c:\users\ben\desktop\othello\src\ia.cpp
 	<iostream>
 	<stdlib.h>
 	"constants.h"
 	"IA.h"
 	"Board.h"
 	<algorithm>
-
-1492995130 source:c:\users\ben\desktop\othello\src\userinterface.cpp
-	<windows.h>
-	<conio.h>
-	"constants.h"
-	"UserInterface.h"
 

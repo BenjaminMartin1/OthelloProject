@@ -14,20 +14,21 @@ class IA
 {
 	public:
 		IA();
-		IA(Board* p_board, int lvl);
+		IA(Board* p_board);
 		virtual ~IA();
 
 		// Exécute la bonne IA selon le level
-		void run(int player);
+		void run(int level, int player);
+
+		// Retourne tree
+		vector<map<char, int>> getTree();
 
 	private:
 		// Pointeur vers l'instance du plateau de jeu. Permet de le manipuler
 		Board* board;
 
-		vector<Board*> tree;
-
-		// Attribut qui définit le niveau de l'IA
-		int level;
+		// Arbre de possibilités
+		vector<map<char, int>> tree;
 
 		// Intelligence artificielle n°1, en privé et appellé par run()
 		void lvl_1(int player);

@@ -13,10 +13,9 @@ IA::IA()
 {
 }
 
-IA::IA(Board* p_board, int lvl)
+IA::IA(Board* p_board)
 {
 	board = p_board;
-	level = lvl;
 }
 
 IA::~IA()
@@ -28,7 +27,7 @@ IA::~IA()
 /*
 	Déclenche la bonne IA
 */
-void IA::run(int player)
+void IA::run(int level, int player)
 {
 	if (level == IA_LVL_1)
 	{
@@ -61,6 +60,16 @@ void IA::lvl_1(int player)
 
 	// Et on y va !
 	board->move(x, y, player);
+
+	// On gère l'arbre
+	tree.clear();
+	map<char, int> cell;
+	for (int i=0 ; i<cells_accessibles.size() ; i++)
+	{
+		cell['x'] = cells_accessibles[i]['x'];
+		cell['y'] = cells_accessibles[i]['y'];
+		tree.push_back(cell);
+	}
 }
 
 
@@ -136,10 +145,17 @@ void IA::lvl_2(int player)
 	//On se place à la profondeur 1
 	depthPosition = boardStates.equal_range(1);
 
-	//Remplissage d'un vecteur de Board pour l'affichage de l'arbre sur le côté du jeu
+
+	tree.clear();
+
+	//Remplissage du tree pour la profondeur 1
 	for (multimap<int, Board>::iterator it = depthPosition.first; it != depthPosition.second; ++it)
 	{
-		tree.push_back(&(*it).second);
+		map<char, int> cell;
+		cell['x'] = (*it).second.getRecordedMove().x;
+		cell['y'] = (*it).second.getRecordedMove().y;
+		cell['s'] = (*it).second.getAssociatedScore();
+		tree.push_back(cell);
 	}
 
 }
@@ -214,4 +230,9 @@ void IA::minmax(multimap<int, Board> &_boardStates)
 	}
 	//Finalement, on effectue le coup de l'IA avec le noeud choisi
 	board->move(nodeResult->getRecordedMove().x, nodeResult->getRecordedMove().y, PLAYER_BLACK);
+}
+
+vector<map<char, int>> IA::getTree()
+{
+	return tree;
 }

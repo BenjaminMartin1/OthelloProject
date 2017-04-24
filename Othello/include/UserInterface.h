@@ -15,7 +15,7 @@ class UserInterface
 
 		static void setup();
 		static void hello();
-		static void bye(int score);
+		static void bye(int winner, int score);
 
 		static int menu();
 

@@ -17,6 +17,7 @@
 #define MENU_IA_1	2
 #define MENU_IA_2	3
 #define MENU_IA_IA	4
+#define MENU_EXIT	5
 
 #define BLACK		0
 #define DARK_BLUE	1

@@ -18,78 +18,89 @@ int main()
 
 	int choice;
 	Game game;
-
+	
 
 	UserInterface::setup();
 	UserInterface::hello();
 
-	choice = UserInterface::menu();
-
-	game.display();
-	while(!game.isOver())
+	while (1)
 	{
+		// Menu
+		choice = UserInterface::menu();
 
-		// Joueur 1
-		switch(choice)
-		{
-			case MENU_MULTI:
-			case MENU_IA_1:
-			case MENU_IA_2:
-				game.playHumain(PLAYER_WHITE);
-				break;
+		// Gestion de l'exit
+		if (choice == MENU_EXIT)
+			return 0;
 
-			case MENU_IA_IA:
-				game.playIA(PLAYER_WHITE);
-				break;
-
-		}
+		// Affichage inital
 		game.display();
 
-
-		// On check une fin de partie entre les deux tours
-		if(game.isOver())
-			break;
-
-		// Eventelle attente entre les deux tours
-		if (choice == MENU_IA_1 or choice == MENU_IA_IA)
-			Sleep(1300);
-
-
-
-		// Joueur 2
-		switch(choice)
+		// Gestiond des tours de jeu
+		while(!game.isOver())
 		{
-			case MENU_MULTI:
-				game.playHumain(PLAYER_BLACK);
+
+			// Joueur 1
+			switch(choice)
+			{
+				case MENU_MULTI:
+				case MENU_IA_1:
+				case MENU_IA_2:
+					game.playHumain(PLAYER_WHITE);
+					break;
+
+				case MENU_IA_IA:
+					game.playIA(IA_LVL_1, PLAYER_WHITE);
+					break;
+
+			}
+			game.display();
+
+
+			// On check une fin de partie entre les deux tours
+			if(game.isOver())
 				break;
 
-
-			case MENU_IA_1:
-			case MENU_IA_IA:
-				game.playIA(PLAYER_BLACK);
-				break;
+			// Eventelle attente entre les deux tours
+			if (choice == MENU_IA_1 or choice == MENU_IA_IA)
+				Sleep(1300);
 
 
-			case MENU_IA_2:
-				game.playIA(PLAYER_BLACK);
-				break;
+
+			// Joueur 2
+			switch(choice)
+			{
+				case MENU_MULTI:
+					game.playHumain(PLAYER_BLACK);
+					break;
+
+
+				case MENU_IA_1:
+				case MENU_IA_IA:
+					game.playIA(IA_LVL_1, PLAYER_BLACK);
+					break;
+
+
+				case MENU_IA_2:
+					game.playIA(IA_LVL_2, PLAYER_BLACK);
+					break;
+			}
+			game.display();
+
 		}
-		game.display();
+
+
+		// Récupération gagant et score
+		int winner = game.getWinner();
+		int score  = game.getScore(PLAYER_WHITE);
+
+		// Ecran game over
+		system("cls");
+		UserInterface::bye(winner, score);
+
+		// On reset
+		game.reset();
 
 	}
-
-
-	int winner = game.getWinner();
-	int score  = game.getScore(PLAYER_WHITE);
-
-	system("cls");
-	cout << "Fin du jeu" << endl << endl;
-	cout << "Gagnant : " << winner << endl;
-	cout << "Score : " << score << endl;
-
-
-	//UserInterface::bye();
-
 
 	return 0;
 }

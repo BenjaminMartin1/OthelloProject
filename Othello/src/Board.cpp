@@ -41,6 +41,7 @@ Board::~Board()
 }
 
 
+
 /*
 	Retourne le contenu d'une cellule
 */
@@ -142,3 +143,251 @@ vector< map<char,int> > Board::accessibles(int player)
 			}
 		}
 	}
+
+
+	// On récupère toutes les cases libres adjacentes à chacun des ennemis
+	for (int i=0; i<enemies.size() ; i++)
+	{
+
+		// On répète l'opération de détection de la case adjacente les 4 directions
+		for (int direction=0 ; direction<4 ; direction++)
+		{
+			// On règle le déplacement (steps x et y) selon la direction en cours
+			switch (direction) {
+				case 0: step_x=0;  step_y=-1; break;	// gauche
+				case 1: step_x=-1; step_y=0;  break;	// haut
+				case 2: step_x=0;  step_y=1;  break;	// droite
+				case 3: step_x=1;  step_y=0;  break;	// bas
+			}
+
+			x = enemies[i]['x'] + step_x;
+			y = enemies[i]['y'] + step_y;
+
+
+			// Si la case est hors terrain, on coupe
+			if (x<0 || x>7 || y<0 || y>7)
+				continue;
+
+
+			// Si la case n'est pas vide, on coupe
+			if (cells[x][y] != CELL_EMPTY)
+				continue;
+
+
+			// Si la case a déjà été ajouté, on coupe
+			bool already_added = false;
+
+			for (int j=0 ; j<accessibles.size() ; j++)
+			{
+				if (accessibles[j]['x'] == x && accessibles[j]['y'] == y)
+					already_added = true;
+			}
+
+			if (already_added)
+				continue;
+
+
+			// Si la case ne permet de manger des adversaires, on coupe
+			if (eatables(x,y,player).size() == 0)
+				continue;
+
+
+			// Donc ici, tout a été validé. La case est jouable, on l'ajoute
+			map<char,int> cell;
+			cell['x'] = x;
+			cell['y'] = y;
+
+			accessibles.push_back(cell);
+		}
+
+	}
+
+	return accessibles;
+}
+
+
+
+/*
+	Retourne toutes les coordonnées des pièces adversaires qui peuvent être
+	mangées, selon la position indiquée.
+	Le retour est sous forme d'un vecteur de maps (clés x et y)
+*/
+vector< map<char,int> > Board::eatables(int x_initial, int y_initial, int player)
+{
+
+	std::vector< map<char,int> > eatables;
+	int nb_enemies, x, y, step_x, step_y;
+	bool friend_found;
+
+
+	// On défini de quel type sont les cases amies
+	int friend_cell	 = (player == PLAYER_WHITE) ? CELL_WHITE : CELL_BLACK;
+
+
+	// On répétera l'opération de détection dans les 8 directions différentes
+	for (int direction=0 ; direction<8 ; direction++)
+	{
+
+		// Initialisation des variables
+		friend_found = false;
+		nb_enemies 	 = 0;
+
+		x = x_initial;
+		y = y_initial;
+
+		// On règle le déplacement (steps x et y) selon la direction en cours
+		switch (direction) {
+			case 0: step_x=0;  step_y=-1; break;	// gauche
+			case 1: step_x=-1; step_y=-1; break;	// diagonale gauche haut
+			case 2: step_x=-1; step_y=0;  break;	// haut
+			case 3: step_x=-1; step_y=1;  break;	// diagonale haut droit
+			case 4: step_x=0;  step_y=1;  break;	// droite
+			case 5: step_x=1;  step_y=1;  break;	// diagonale bas droit
+			case 6: step_x=1;  step_y=0;  break;	// bas
+			case 7: step_x=1;  step_y=-1; break;	// diagonale bas gauche
+		}
+
+
+		// On parcourt le plateau dans la direction donnée jusqu'à atteindre la bordure
+		while ( x >= 0 && x <= 7 && y >= 0 && y <= 7 )
+		{
+			// On se déplace
+			x += step_x;
+			y += step_y;
+
+			// On est arrivé à l'ami, on stop notre déplacement
+			if (cells[x][y] == friend_cell)
+			{
+				friend_found = true;
+				break;
+			}
+			// On est arrivé à une case vide, il y a donc pas d'ami. Rien n'est eatable
+			else if (cells[x][y] == CELL_EMPTY)
+			{
+				break;
+			}
+			// On est sur une case enemie
+			else
+			{
+				nb_enemies++;
+			}
+		}
+
+
+		// Si ami trouvé, on ajoute dans "eatables" tous les ennemis entre moi et l'ami
+		if (friend_found)
+		{
+			// On se replace sur nous même
+			x = x_initial;
+			y = y_initial;
+
+			// On se redéplace jusqu'à l'ami, donc en passant par tous les enemis
+			for (int i=0 ; i<nb_enemies ; i++)
+			{
+				x += step_x;
+				y += step_y;
+
+				// On référence l'enemi sur lequel on est actuellement
+				map<char,int> enemy;
+				enemy['x'] = x;
+				enemy['y'] = y;
+
+				eatables.push_back(enemy);
+			}
+		}
+
+	}
+
+	return eatables;
+}
+
+
+
+/*
+	Mange un pion : il le transforme en la couleur opposé
+	Retourne true ou false
+*/
+bool Board::eat(int x, int y)
+{
+	// Vérification du non-dépassement des bordures
+	if ( x<0 || x>7 || y <0 || y>7)
+		return false;
+
+
+	// Modification de la case
+	switch (cells[x][y])
+	{
+		// Pion blanc sur la case
+		case CELL_WHITE:
+			cells[x][y] = CELL_BLACK;
+			return true;
+			break;
+
+		// Pion noir sur la case
+		case CELL_BLACK:
+			cells[x][y] = CELL_WHITE;
+			return true;
+			break;
+
+		// Case vide ou erronnée
+		default:
+			return false;
+			break;
+	}
+}
+
+/*
+	 Setter pour le score associé
+*/
+void Board::setAssociatedScore(int _associatedScore)
+{
+	associatedScore = _associatedScore;
+}
+
+/*
+	Getter pour le score associé
+	Retourner le score associé
+*/
+int Board::getAssociatedScore()
+{
+	return associatedScore;
+}
+
+
+/*
+Setter pour l'état précédent
+*/
+void Board::setPreviousState(Board* _previousState)
+{
+	previousState = _previousState;
+}
+
+
+/*
+Getter pour l'état précédent
+Retourner l'état précédent
+*/
+Board* Board::getPreviousState()
+{
+	return previousState;
+}
+
+/*
+Setter pour le move effectué
+*/
+void Board::setRecordedMove(int _x, int _y)
+{
+	recordedMove.x = _x;
+	recordedMove.y = _y;
+}
+
+
+/*
+Getter pour le move effectué
+Retourner le move effectué
+*/
+recordedMovePos Board::getRecordedMove()
+{
+	return recordedMove;
+}
+
